@@ -1,8 +1,15 @@
 package com.amap.flutter.map.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.text.TextUtils;
 
@@ -81,8 +88,8 @@ public class ConvertUtil {
                 return CameraUpdateFactory.newLatLngZoom(toLatLng(data.get(1)), toFloat(data.get(2)));
             case "scrollBy":
                 return CameraUpdateFactory.scrollBy( //
-                                                     toFloatPixels(data.get(1)), //
-                                                     toFloatPixels(data.get(2)));
+                        toFloatPixels(data.get(1)), //
+                        toFloatPixels(data.get(2)));
             case "zoomBy":
                 if (data.size() == 2) {
                     return CameraUpdateFactory.zoomBy(toFloat(data.get(1)));
@@ -350,9 +357,67 @@ public class ConvertUtil {
                 }
             case "fromBytes":
                 return getBitmapFromBytes(data);
+            case "customCircle":
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) getDrawAble(toString(data.get(1)), toString(data.get(2)), toString(data.get(3)), toInt(data.get(4)));
+                return BitmapDescriptorFactory.fromBitmap(bitmapDrawable.getBitmap());
             default:
                 throw new IllegalArgumentException("Cannot interpret " + o + " as BitmapDescriptor");
         }
+    }
+
+    public static Drawable getDrawAble(String name, String count, String color, int radius) {
+        Map<Integer, Drawable> mBackDrawAbles = new HashMap<Integer, Drawable>();
+        Drawable bitmapDrawable = mBackDrawAbles.get(1);
+        if (bitmapDrawable == null) {
+            bitmapDrawable = new BitmapDrawable(null, drawCircle(name, count, radius,
+                    Color.parseColor("#" + color)));
+            mBackDrawAbles.put(1, bitmapDrawable);
+        }
+
+        return bitmapDrawable;
+    }
+
+    public int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    private static Bitmap drawCircle(String name, String count, int radius, int color) {
+        if (name.length() > 4) {
+            name = name.substring(0, 4) + "...";
+        }
+        if (name.length() == 0) {
+            name = " ";
+        }
+        if (count.length() == 0) {
+            count = " ";
+        }
+        int borderWidth = 10;
+        int textSize = radius / 2;
+        int middleLineTop = radius / 5;
+
+        Bitmap bitmap = Bitmap.createBitmap((radius + borderWidth) * 2, (radius + borderWidth) * 2,
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint innerPaint = new Paint();
+        Paint outterPaint = new Paint();
+        Paint textPaint = new Paint();
+        RectF outerArc = new RectF(0, 0, (radius + borderWidth) * 2, (radius + borderWidth) * 2);
+        RectF innerArc = new RectF(borderWidth, borderWidth, radius * 2 + borderWidth, radius * 2 + borderWidth);
+        outterPaint.setColor(Color.WHITE);
+        canvas.drawArc(outerArc, 0, 360, true, outterPaint);
+        innerPaint.setColor(color);
+        canvas.drawArc(innerArc, 0, 360, true, innerPaint);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        int nameSize = textSize * 2 / (name.length() > 2 ? name.length() - 1 : name.length());
+        textPaint.setTextSize(nameSize);
+        canvas.drawText(name, outerArc.centerX(), outerArc.centerY() - nameSize / 2 + middleLineTop, textPaint);
+        int countSize = textSize * 2 / (count.length() > 2 ? count.length() - 1 : name.length());
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(countSize);
+        canvas.drawText(count, outerArc.centerX(), outerArc.centerY() + countSize / 2 + 5 + middleLineTop, textPaint);
+        return bitmap;
     }
 
     public static List<BitmapDescriptor> toBitmapDescriptorList(Object o) {

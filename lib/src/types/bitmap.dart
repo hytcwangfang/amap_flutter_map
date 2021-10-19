@@ -7,7 +7,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:amap_flutter_base/amap_flutter_base.dart' show AMapUtil;
 import 'package:flutter/material.dart'
-    show ImageConfiguration, AssetImage, AssetBundleImageKey;
+    show ImageConfiguration, AssetImage, AssetBundleImageKey, Color;
 import 'package:flutter/services.dart' show AssetBundle;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -48,7 +48,7 @@ class BitmapDescriptor {
 
   /// 创建默认的marker 图标的 bitmap 描述信息对象.
   static const BitmapDescriptor defaultMarker =
-      BitmapDescriptor._(<dynamic>['defaultMarker']);
+  BitmapDescriptor._(<dynamic>['defaultMarker']);
 
   /// 创建引用默认着色的BitmapDescriptor
   static BitmapDescriptor defaultMarkerWithHue(double hue) {
@@ -98,12 +98,12 @@ class BitmapDescriptor {
   ///并根据dpi将图像缩放到正确的分辨率。
   ///将`mipmaps1设置为false可加载图像的精确dpi版本，默认情况下，`mipmap`为true。
   static Future<BitmapDescriptor> fromAssetImage(
-    ImageConfiguration configuration,
-    String assetName, {
-    AssetBundle bundle,
-    String package,
-    bool mipmaps = true,
-  }) async {
+      ImageConfiguration configuration,
+      String assetName, {
+        AssetBundle bundle,
+        String package,
+        bool mipmaps = true,
+      }) async {
     if (!mipmaps && configuration.devicePixelRatio != null) {
       return BitmapDescriptor._(<dynamic>[
         'fromAssetImage',
@@ -112,9 +112,9 @@ class BitmapDescriptor {
       ]);
     }
     final AssetImage assetImage =
-        AssetImage(assetName, package: package, bundle: bundle);
+    AssetImage(assetName, package: package, bundle: bundle);
     final AssetBundleImageKey assetBundleImageKey =
-        await assetImage.obtainKey(configuration);
+    await assetImage.obtainKey(configuration);
     return BitmapDescriptor._(<dynamic>[
       'fromAssetImage',
       assetBundleImageKey.name,
@@ -130,6 +130,18 @@ class BitmapDescriptor {
   /// 根据将PNG图片转换后的二进制数据[byteData]创建BitmapDescriptor
   static BitmapDescriptor fromBytes(Uint8List byteData) {
     return BitmapDescriptor._(<dynamic>['fromBytes', byteData]);
+  }
+
+  /// 自定义圆
+  static BitmapDescriptor customCircle(String name, String count, Color color,
+      int radius) {
+    return BitmapDescriptor._(<dynamic>[
+      'customCircle',
+      name,
+      count,
+      color.value.toRadixString(16),
+      radius
+    ]);
   }
 
   final dynamic _json;

@@ -104,6 +104,15 @@ class _ShowMapPageState extends State<_ShowMapPageBody> {
 
 ```
 
+## 添加自定义圆 BitmapDescriptor.customCircle
+```dart
+Marker marker = Marker(
+      position: _markerPosition,
+      //使用默认hue的方式设置Marker的图标
+      icon: BitmapDescriptor.customCircle("内蒙", "23", Colors.red, 100),
+    );
+```
+
 ## 点聚合使用示例：参考demo中的marker_add_with_map.dart文件即可
 * 聚合效果图如下：
 ![image](https://github.com/dmlzj/amap_flutter_map/blob/master/test/Screenshot.jpg)

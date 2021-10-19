@@ -28,11 +28,13 @@ class _Body extends StatefulWidget {
 
 class _BodyState extends State<_Body> {
   static final LatLng defaultPosition = const LatLng(39.909187, 116.397451);
+
   //需要先设置一个空的map赋值给AMapWidget的markers，否则后续无法添加marker
   final Map<String, Marker> _markers = <String, Marker>{};
 
   final Map<String, Cluster> _clusters = <String, Cluster>{};
   LatLng _currentLatLng = defaultPosition;
+
   //添加一个marker
   void _addMarker() {
     final _markerPosition =
@@ -40,7 +42,7 @@ class _BodyState extends State<_Body> {
     final Marker marker = Marker(
       position: _markerPosition,
       //使用默认hue的方式设置Marker的图标
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      icon: BitmapDescriptor.customCircle("内蒙", "23", Colors.red, 100),
     );
     //调用setState触发AMapWidget的更新，从而完成marker的添加
     setState(() {
@@ -50,14 +52,13 @@ class _BodyState extends State<_Body> {
     });
   }
 
-
   void _addCluster() {
     final _position =
         LatLng(_currentLatLng.latitude, _currentLatLng.longitude + 2 / 1000);
-        final Cluster cluster = Cluster(position: _position);
-        setState(() {
-          _clusters[cluster.id] = cluster;
-        });
+    final Cluster cluster = Cluster(position: _position);
+    setState(() {
+      _clusters[cluster.id] = cluster;
+    });
   }
 
   FlatButton _createMyFloatButton(String label, Function onPressed) {
