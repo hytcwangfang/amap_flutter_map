@@ -413,7 +413,7 @@ public class ConvertUtil {
         int nameSize = textSize * 2 / (name.length() > 2 ? name.length() - 1 : name.length());
         textPaint.setTextSize(nameSize);
         canvas.drawText(name, outerArc.centerX(), outerArc.centerY() - nameSize / 2 + middleLineTop, textPaint);
-        int countSize = textSize * 2 / (count.length() > 2 ? count.length() - 1 : name.length());
+        int countSize = textSize;
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextSize(countSize);
         canvas.drawText(count, outerArc.centerX(), outerArc.centerY() + countSize / 2 + 5 + middleLineTop, textPaint);
